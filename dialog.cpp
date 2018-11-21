@@ -1,33 +1,38 @@
+#define _GLIBCXX_USE_CXX11_ABI 0
+#include <string>
 #include <QtWidgets>
 #include "dialog.h"
 
 Dialog::Dialog(QWidget *parent)
     : QWidget(parent)
 {
-    integerLabel = new QLabel;
-    integerLabel->setFrameStyle(QFrame::Panel);
-    integerLabel->setText(tr("0"));
-    QPushButton *integerButton = new QPushButton(tr("Set Value"));
-    // connect(integerButton, &QAbstractButton::clicked, this, &Dialog::setInteger);
-    connect(integerButton, SIGNAL(released()), this, SLOT(setInteger()));
-
-   
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(integerButton, 0, 0);
-    mainLayout->addWidget(integerLabel, 0, 1);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
+    widget = new QWidget;
+    widget->setStyleSheet("background: hsv(0, 200, 200)");
+    QHBoxLayout *layout = new QHBoxLayout(widget);
+
+    horizontalSlider = new QSlider(Qt::Horizontal);
+    horizontalSlider->setMaximum(255);
+    horizontalSlider->setMinimum(0);
+
+    connect(horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(setColor(int)));
+
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(horizontalSlider);
+
+    layout->setAlignment(Qt::AlignCenter);
+    layout->setContentsMargins(0, 0, 0, 0);
+    widget->setLayout(layout);
+
+    mainLayout->addWidget(widget, 0, 0);
 
     setLayout(mainLayout);
-
-    setWindowTitle(tr("Example app"));
 }
 
-void Dialog::setInteger()
+void Dialog::setColor(int x)
 {
-    bool ok;
-    // QInputDialog input = new QInputDialog();
-    // input->setStyleSheet("QLineEdit#nameEdit { background-color: yellow }");
-    int i = QInputDialog::getInt(this, tr("Set Value"),
-                                 tr("Value:"), 0, -10000, 10000, 1, &ok);
-    if (ok)
-        integerLabel->setText(tr("%1").arg(i));
+    std::string col = "background: hsv(" + std::to_string(x) + ", 200, 200)";
+    widget->setStyleSheet(col.c_str());
 }

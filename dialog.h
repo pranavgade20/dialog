@@ -2,6 +2,7 @@
 #define DIALOG_H
 
 #include <QWidget>
+#include <QSlider>
 
 class QLabel;
 
@@ -13,10 +14,11 @@ public:
     Dialog(QWidget *parent = 0);
 
 private slots:
-    void setInteger();
+    void setColor(int);
 
 private:
-    QLabel *integerLabel;
+	QWidget *widget;
+    QSlider *horizontalSlider;
 };
 
 #endif
